@@ -42,3 +42,7 @@ You can create the AI on Ollama using the Modelfile and the LLM file like this,
 Ollama create {Your chosen name for the local model} -f Modelfile 
 ---------------------------------------
 The model was trained using the cleaned csv that was turned into a json file
+
+https://drive.google.com/file/d/1fRloUMLtSE3Bfw5_4Tr9qne0IKOBYtql/view?usp=sharing
+
+Link for the model
