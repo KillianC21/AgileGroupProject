@@ -1,0 +1,44 @@
+This is the model for PTMACK for predicting personality, its designed to take specific inputs using this format exactly, x is a floating point number from 0.0 - 10.0.
+
+Any deviation from this input can cause the AI to hallucinate results, its only capable of outputting one of the 3 personalities and will not admit to being wrong, it has been tested extensively on test cases and never failed using this format.
+
+{
+"role": "user",
+
+"content": "Predict the personality type:
+\nSocial Energy: (x)
+\nAlone Time Preference: (x)
+\nTalkativeness: (x)
+\nDeep Reflection: (x)
+\nGroup Comfort: (x)
+\nParty Liking: (x)
+\nListening Skill: (x)
+\nEmpathy: (x)
+\nCreativity: (x)
+\nOrganization: (x)
+\nLeadership: (x)
+\nRisk Taking: (x)
+\nPublic Speaking Comfort: (x)
+\nCuriosity: (x)
+\nRoutine Preference: (x)
+\nExcitement Seeking: (x)
+\nFriendliness: (x)
+\nEmotional Stability: (x)
+\nPlanning: (x)
+\nSpontaneity: (x)
+\nAdventurousness: (x)
+\nReading Habit: (x)
+\nSports Interest: (x)
+\nOnline Social Usage: (x)
+\nTravel Desire: (x)
+\nGadget Usage: (x)
+\nWork Style Collaborative: (x)
+\nDecision Speed: (x)
+\nStress Handling: (x)"
+}
+
+You can create the AI on Ollama using the Modelfile and the LLM file like this,
+
+Ollama create {Your chosen name for the local model} -f Modelfile 
+---------------------------------------
+The model was trained using the cleaned csv that was turned into a json file
