@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
 from scipy import stats
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -135,5 +136,29 @@ plt.savefig("scatterplot.png")
 plt.close()
 print("Saved correlation scatterplot to scatterplot.png")
 
+# ---------------------------------------------------------
+# STEP 5: PCA feature reduction
+# ---------------------------------------------------------
 
+print("\n=== STEP 5: PCA Feature Reduction ===")
 
+# Run PCA keeping up to 21 components
+pca = PCA(n_components=min(21, data.shape[1]))
+reduced_data = pca.fit_transform(data)
+
+print(f"PCA complete. Reduced to {reduced_data.shape[1]} components.")
+
+# Create DataFrame for PCA results
+pca_df = pd.DataFrame(reduced_data, columns=[f"PC{i+1}" for i in range(reduced_data.shape[1])])
+
+# Save PCA result
+pca_df.to_csv("processed_step5_pca.csv", index=False)
+print("Saved PCA-reduced dataset → processed_step5_pca.csv")
+
+# ---------------------------------------------------------
+# STEP 6: Finalize cleaned dataset
+# ---------------------------------------------------------
+print("\n=== STEP 6: Finalizing Dataset ===")
+final_path = "final_cleaned_dataset.csv"
+pca_df.to_csv(final_path, index=False) # write the DataFrame into the final csv file excluding pandas row numbers
+print(f"All preprocessing complete! Final dataset saved → {final_path}")
