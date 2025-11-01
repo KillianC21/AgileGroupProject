@@ -1,5 +1,9 @@
-AiWork/PTMACK-AI/phi-3-mini-4k-instruct.Q4_K_M.gguf
-*csv
+# Ignore all CSVs
+*.csv
+
+# keep dataset
 !personality_synthetic_dataset.csv
+
+# Ignore IDE folders
 .vscode/
 .idea/
