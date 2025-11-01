@@ -1,1 +1,6 @@
 AiWork/PTMACK-AI/phi-3-mini-4k-instruct.Q4_K_M.gguf
+final_cleaned_dataset.csv
+pca_explained_variance.csv
+pca_loadings.csv
+personality_synthetic_dataset.csv
+processed_step3.csv
