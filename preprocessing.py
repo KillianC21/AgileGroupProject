@@ -124,17 +124,17 @@ corr = data.corr(numeric_only=True)
 print("\nCorrelation matrix calculated.")
 
 # Optional: visualize correlation heatmap
-plt.figure(figsize=(10, 8))
-for col in corr.columns:
-    plt.scatter(data.index, data[col], label=col, alpha=0.7)
-plt.title("Feature Scatterplot")
-plt.xlabel("Index")
-plt.ylabel("Values")
-plt.legend()
-plt.tight_layout()
-plt.savefig("scatterplot.png")
-plt.close()
-print("Saved correlation scatterplot to scatterplot.png")
+# plt.figure(figsize=(10, 8))
+# for col in corr.columns:
+#     plt.scatter(data.index, data[col], label=col, alpha=0.7)
+# plt.title("Feature Scatterplot")
+# plt.xlabel("Index")
+# plt.ylabel("Values")
+# plt.legend()
+# plt.tight_layout()
+# plt.savefig("scatterplot.png")
+# plt.close()
+# print("Saved correlation scatterplot to scatterplot.png")
 
 # ---------------------------------------------------------
 # STEP 5: PCA feature reduction
@@ -153,12 +153,38 @@ pca_df = pd.DataFrame(reduced_data, columns=[f"PC{i+1}" for i in range(reduced_d
 
 # Save PCA result
 pca_df.to_csv("processed_step5_pca.csv", index=False)
-print("Saved PCA-reduced dataset → processed_step5_pca.csv")
+print("Saved PCA-reduced dataset to processed_step5_pca.csv")
+
+# Capture PCA loadings for interpretation
+loadings = pd.DataFrame(
+    pca.components_.T,  # transpose so features are rows
+    columns=[f"PC{i+1}" for i in range(pca.n_components_)],
+    index=data.columns
+)
+
+# Save for inspection
+loadings.to_csv("pca_loadings.csv")
+print("Saved PCA loadings to pca_loadings.csv")
+
+# capture explained variance
+explained = pd.DataFrame({
+    'PC': [f'PC{i+1}' for i in range(len(pca.explained_variance_ratio_))],
+    'ExplainedVariance': pca.explained_variance_ratio_
+})
+explained.to_csv("pca_explained_variance.csv", index=False)
+print("Saved explained variance to pca_explained_variance.csv")
+
+
 
 # ---------------------------------------------------------
-# STEP 6: Finalize cleaned dataset
+# STEP 6: Finalizing Dataset (Keep original + PCA)
 # ---------------------------------------------------------
 print("\n=== STEP 6: Finalizing Dataset ===")
+
+
+# Save the combined dataset
 final_path = "final_cleaned_dataset.csv"
-pca_df.to_csv(final_path, index=False) # write the DataFrame into the final csv file excluding pandas row numbers
-print(f"All preprocessing complete! Final dataset saved → {final_path}")
+data.to_csv(final_path, index=False)
+
+print(f"All preprocessing complete! Final dataset saved to {final_path}")
+print(f"Final dataset shape: {data.shape}")
