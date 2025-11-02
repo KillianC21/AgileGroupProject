@@ -81,13 +81,13 @@ outliers = (z_scores > outlier_threshold)
 # Count outliers per row
 outlier_ratio = outliers.sum(axis=1) / len(numeric_cols)
 
-# Rule: if >50% outliers in a row → drop it
+# Rule: if >50% outliers in a row drop it
 rows_to_drop = outlier_ratio > 0.5
 print(f"Rows with >50% outliers: {rows_to_drop.sum()}")
 
 data = data[~rows_to_drop].copy()
 
-# Replace remaining outliers with mean (or median)
+# Replace remaining outliers with mean
 for col in numeric_cols:
     col_z = z_scores[:, list(numeric_cols).index(col)]
     mask = col_z > outlier_threshold
@@ -177,7 +177,7 @@ print("Saved explained variance to pca_explained_variance.csv")
 
 
 # ---------------------------------------------------------
-# STEP 6: Finalizing Dataset (Keep original + PCA)
+# STEP 6: Finalizing Dataset
 # ---------------------------------------------------------
 print("\n=== STEP 6: Finalizing Dataset ===")
 
