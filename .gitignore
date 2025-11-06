@@ -1,6 +1,3 @@
-#Ignore all guff
-*.guff
-
 # Ignore all CSVs
 *.csv
 
