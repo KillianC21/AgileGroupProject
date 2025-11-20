@@ -4,9 +4,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
-# ============================================================
-# STEP 6: Full PCA Loading Heatmap
-# ============================================================
+
+# Script to generate a heatmap of PCA eigenvectors
 
 # Read eigenvectors (loadings) from CSV
 loadings = pd.read_csv("pca_eigenvectors.csv", index_col=0)

@@ -5,8 +5,10 @@ import seaborn as sns
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 
+# Script to perform PCA on standardized numeric data and save eigenvectors
+
 # ============================================================
-# STEP 1: Load and Standardize Data
+# STEP 1: Load and Standardized Data
 # ============================================================
 data = pd.read_csv("personality_synthetic_dataset.csv")
 X = data.select_dtypes(include=[np.number])
@@ -26,7 +28,7 @@ variance_ratio = pca.explained_variance_ratio_
 cumulative_variance = np.cumsum(variance_ratio)
 
 # ============================================================
-# STEP 3: Eigenvector Table (Loadings)
+# STEP 3: Eigenvector Table
 # ============================================================
 loadings = pd.DataFrame(
     pca.components_.T,
