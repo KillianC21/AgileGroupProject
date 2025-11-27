@@ -1,8 +1,6 @@
-#Ignore all guff
-*.guff
-
 # Ignore all CSVs
 *.csv
+*.png
 
 # keep dataset
 !personality_synthetic_dataset.csv

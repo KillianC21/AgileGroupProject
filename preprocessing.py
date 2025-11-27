@@ -6,6 +6,8 @@ from scipy import stats
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+# Script to Preprocess dataset by normalizing, encoding, outlier handling, and saving final cleaned data.
+
 # =========================================================
 # STEP 1: Load and Inspect Dataset
 # =========================================================
@@ -61,10 +63,6 @@ if len(numericCols) > 0:
 else:
     print("No numeric columns to scale.")
 
-# Save intermediate result
-data.to_csv("processedStep2.csv", index=False)
-print("Saved processed data into processedStep2.csv")
-
 # ---------------------------------------------------------
 # STEP 3: Detect and handle outliers using z-score
 # ---------------------------------------------------------
@@ -97,15 +95,6 @@ for col in numeric_cols:
 
 print("Outlier complete.")
 
-# Save intermediate file
-data.to_csv("processed_step3.csv", index=False)
-print("Saved dataset after outlier handling to processed_step3.csv")
-
-# Labels overlapping each other in boxplot -> solution - stacked hortizonal bar char or box plot for each column
-# plt.boxplot(data[numeric_cols].values, labels=numeric_cols)
-# plt.title("Boxplot after Outlier Handling")
-# plt.show()
-
 # ---------------------------------------------------------
 # STEP 4: Remove duplicates and analyze correlations
 # ---------------------------------------------------------
@@ -123,63 +112,10 @@ if duplicates > 0:
 corr = data.corr(numeric_only=True)
 print("\nCorrelation matrix calculated.")
 
-# Optional: visualize correlation heatmap
-# plt.figure(figsize=(10, 8))
-# for col in corr.columns:
-#     plt.scatter(data.index, data[col], label=col, alpha=0.7)
-# plt.title("Feature Scatterplot")
-# plt.xlabel("Index")
-# plt.ylabel("Values")
-# plt.legend()
-# plt.tight_layout()
-# plt.savefig("scatterplot.png")
-# plt.close()
-# print("Saved correlation scatterplot to scatterplot.png")
-
 # ---------------------------------------------------------
-# STEP 5: PCA feature reduction
+# STEP 5: Finalizing Dataset
 # ---------------------------------------------------------
-
-print("\n=== STEP 5: PCA Feature Reduction ===")
-
-# Run PCA keeping up to 21 components
-pca = PCA(n_components=min(21, data.shape[1]))
-reduced_data = pca.fit_transform(data)
-
-print(f"PCA complete. Reduced to {reduced_data.shape[1]} components.")
-
-# Create DataFrame for PCA results
-pca_df = pd.DataFrame(reduced_data, columns=[f"PC{i+1}" for i in range(reduced_data.shape[1])])
-
-# Save PCA result
-pca_df.to_csv("processed_step5_pca.csv", index=False)
-print("Saved PCA-reduced dataset to processed_step5_pca.csv")
-
-# Capture PCA loadings for interpretation
-loadings = pd.DataFrame(
-    pca.components_.T,  # transpose so features are rows
-    columns=[f"PC{i+1}" for i in range(pca.n_components_)],
-    index=data.columns
-)
-
-# Save for inspection
-loadings.to_csv("pca_loadings.csv")
-print("Saved PCA loadings to pca_loadings.csv")
-
-# capture explained variance
-explained = pd.DataFrame({
-    'PC': [f'PC{i+1}' for i in range(len(pca.explained_variance_ratio_))],
-    'ExplainedVariance': pca.explained_variance_ratio_
-})
-explained.to_csv("pca_explained_variance.csv", index=False)
-print("Saved explained variance to pca_explained_variance.csv")
-
-
-
-# ---------------------------------------------------------
-# STEP 6: Finalizing Dataset
-# ---------------------------------------------------------
-print("\n=== STEP 6: Finalizing Dataset ===")
+print("\n=== STEP 5: Finalizing Dataset ===")
 
 
 # Save the combined dataset
