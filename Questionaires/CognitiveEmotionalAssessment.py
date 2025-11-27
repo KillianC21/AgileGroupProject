@@ -8,6 +8,7 @@
 
 #Covers thinking style, curiosity, and how they handle social tasks.
 
+from Questionaires.CognitiveEmotionalAssessment import cognitive_emotional_assessment
 
 
 def cognitive_emotional_assessment():
@@ -30,7 +31,7 @@ def cognitive_emotional_assessment():
         while True:
             try:
                 score = int(input(f"{q} (1-10): "))
-                if 1 <= score <= 5:
+                if 1 <= score <= 10:
                     scores.append(score)
                     break
 
