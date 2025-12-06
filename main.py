@@ -1,141 +1,128 @@
-#Main function for running tests
 import json
-# import trained model
-import pickle
-import os
 
-# import assessment modules
-from Questionaires.SocialPersonalAssessment import social_personal_assessment
-from Questionaires.CognitiveEmotionalAssessment import cognitive_emotional_assessment
-from Questionaires.LifestyleBehavioralAssessment import lifestyle_behavioural_assessment
+# Authentication
+from auth.login import login_system
+from auth.signup import signup_system
 
-#import login and sign up modules
-from Auth.login import login_system
-from Auth.signup import signup_system
+# ML and visualization
+from models.predict import predict_personality
+from auth.save_patient import save_patient
+from visualizations.model_visuals import visualize_feature_importance, visualize_pca_clusters, visualize_trait_means
+
+# Questionnaires
+from questionnaires.SocialPersonalAssessment import social_personal_assessment
+from questionnaires.CognitiveEmotionalAssessment import cognitive_emotional_assessment
+from questionnaires.LifestyleBehavioralAssessment import lifestyle_behavioural_assessment
 
 
-#load the trained model
-#implement here
 
+
+# USER DATABASE HELPERS
 FILE_NAME = "users.json"
 
-#load user database with .json
 def load_user_db():
-   try:
-       with open(FILE_NAME, 'r') as f:
-           return json.load(f)
-
-   except Exception as e:
-         print(f"An error occurred while loading user database: {e}")
-         return {}
-
-#save JSON user database
-def save_userdb(user_db):
     try:
-        with open(FILE_NAME, 'w') as f:
-            json.dump(user_db, f)
-    except Exception as e:
-        print(f"An error occurred while saving user database: {e}")
+        with open(FILE_NAME, 'r') as f:
+            return json.load(f)
+    except:
+        return {}
 
-def conduct_tests():
-    total_scores = []
-    scores1 = social_personal_assessment()
-    scores2 = cognitive_emotional_assessment()
-    scores3 = lifestyle_behavioural_assessment()
+def save_user_db(user_db):
+    with open(FILE_NAME, 'w') as f:
+        json.dump(user_db, f, indent=4)
 
-    print(scores1)
-    total_scores.extend(scores1)
-    print(scores2)
-    total_scores.extend(scores2)
-    print(scores3)
-    total_scores.extend(scores3)
 
-    # print total scores
-    print(total_scores)
+# QUESTIONNAIRE
+def run_full_assessment():
+    print("\n--- Social & Personal Assessment ---")
+    scores_social = social_personal_assessment()
+
+    print("\n--- Cognitive & Emotional Assessment ---")
+    scores_cognitive = cognitive_emotional_assessment()
+
+    print("\n--- Lifestyle & Behavioral Assessment ---")
+    scores_lifestyle = lifestyle_behavioural_assessment()
+
+    # combine into one list of 15 values
+    total_scores = scores_social + scores_cognitive + scores_lifestyle
+    return total_scores
+
+
+
+# MAIN DOCTOR MENU
+
+def doctor_menu():
+    while True:
+        print("\n=== Doctor Menu ===")
+        print("1. Conduct Personality Test")
+        print("2. Feature Importance (Model)")
+        print("3. PCA Cluster Plot")
+        print("4. Trait Means by Personality Type")
+        print("5. Exit")
+
+
+        choice = input("\nEnter choice: ")
+
+        if choice == "1":
+            scores = run_full_assessment()
+            prediction = predict_personality(scores)
+            print("\nPredicted Personality:", prediction)
+            save_patient(scores, prediction)
+
+        elif choice == "2":
+            visualize_feature_importance()
+
+        elif choice == "3":
+            visualize_pca_clusters()
+
+        elif choice == "4":
+            visualize_trait_means()
+
+        elif choice == "5":
+            break
+
+
+        else:
+            print("Invalid option. Try again.")
+
+
+# LOGIN / SIGNUP MENU
 
 def main():
-    print("Welcome to PTMack\n"
-          "Here you can self assessment yourself\n"
-          "The assessment is for a diagonises if you are introvert, extrovert or ambivert.")
-
-    print("\n-- PLEASE BE AWARE --\n"
-          "This is not an accurate diagnoises of your personality\n"
-          "You will may be asked personal questions.\n"
-          "You can use these results at your own accord\n")
+    print("=== Welcome to PTMack Personality Assessment ===\n")
 
     user_db = load_user_db()
-    total_scores = []
+
     while True:
-        user_input = input("Do you wish to continue? (Y/N)?").upper()
+        print("1. Login")
+        print("2. Signup")
+        print("3. Exit")
 
-        if user_input == 'Y':
-            print("Great! Let's get started.")
-            has_account = input("Do you have an account? (Y/N)?").upper()
+        option = input("Choose an option: ")
 
-            #----LOGIN----
-            if has_account == 'Y':
-                print("Please log in to continue.")
-                if login_system(user_db):
-                    login_system(user_db)
-
-                    print("Starting the assessment...\n")
-
-                    # Conduct assessments
-                    scores1 = social_personal_assessment()
-                    scores2 = cognitive_emotional_assessment()
-                    scores3 = lifestyle_behavioural_assessment()
-
-                    print(scores1)
-                    total_scores.extend(scores1)
-                    print(scores2)
-                    total_scores.extend(scores2)
-                    print(scores3)
-                    total_scores.extend(scores3)
-
-                    #print total scores
-                    print(total_scores)
-
-                    # Make prediction
-                    # prediction = predict_model.predict([scores])
-                    #
-                    # print("\n------ ASSESSMENT COMPLETE -----")
-                    # print("Based on your responses\n")
-                    # print(f"your personality type: {prediction}")
-                    # if prediction == ['Extrovert']:
-                    #     print("You are outgoing, energetic, and thrive in social situations.\n")
-                    # elif prediction == ['Introvert']:
-                    #     print("You are reflective, reserved, and prefer solitary activities.\n")
-                    #
-                    # elif prediction == ['Ambivert']:
-                    #     print("You exhibit qualities of both introversion and extroversion, adapting to different situations.\n")
-                    #
-                    print("--------------------------------\n")
-                    print("Thank you for completing the assessment!")
-                    break
-                else:
-                    print("Auth failed")
-
-            elif has_account == 'N':
-                print("Please create an account to continue.")
-
-                if signup_system(user_db):
-                    #implement signup
-                    signup_system(user_db)
-                    save_userdb(user_db)
-
-
-
+        # LOGIN 
+        if option == "1":
+            if login_system(user_db):
+                print("Login successful! Access granted.")
+                doctor_menu()   # ← Enter the assessment menu
+                break
             else:
-                print("Invalid option. Please enter 'Y' or 'N'.")
+                print("Login failed. Try again.\n")
 
-        elif user_input == 'N':
-            print("Thank you for visiting PTMack. Goodbye!")
+        # SIGNUP 
+        elif option == "2":
+            if signup_system(user_db):
+                save_user_db(user_db)
+                print("Signup complete. You can now log in.\n")
+
+        # EXIT 
+        elif option == "3":
+            print("Goodbye!")
             break
 
         else:
-            print("Invalid option. Please enter 'Y' or 'N'.")
+            print("Invalid option. Try again.\n")
 
 
 if __name__ == "__main__":
     main()
-
