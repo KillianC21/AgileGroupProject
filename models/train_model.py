@@ -3,6 +3,8 @@ import numpy as np
 import pickle
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, classification_report
 
 DATA_FILE = "data/final_cleaned_dataset.csv"
 MODEL_FILE = "models/model.pkl"
@@ -27,24 +29,32 @@ def get_target_label(row):
         return 2   # Ambivert
 
 def train():
-    # Load dataset
+    print("\n=== Training Model ===")
+
     data = pd.read_csv(DATA_FILE)
 
-    # Features & target
     X = data[FEATURE_COLS]
     y = data.apply(get_target_label, axis=1)
 
-    # Scale features
-    scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(X)
+    # Train-test split (20% test set)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42, stratify=y
+    )
 
-    # RandomForest Model
+    # Fit scaler only on training data
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    X_test_scaled = scaler.transform(X_test)
+
+    # Random Forest Model
     model = RandomForestClassifier(
         n_estimators=300,
         random_state=42,
         class_weight="balanced"
     )
-    
+
+    model.fit(X_train_scaled, y_train)
+
     # Print class balance for debugging
     # print("Class balance:")
     # print(y.value_counts())
@@ -55,9 +65,16 @@ def train():
     # print("Feature mins in dataset:", X.min().values)
     # print("Feature max in dataset:", X.max().values)
 
+    # ---- ACCURACY RESULTS ----
+    train_preds = model.predict(X_train_scaled)
+    test_preds = model.predict(X_test_scaled)
 
-    # Train model
-    model.fit(X_scaled, y)
+    train_acc = accuracy_score(y_train, train_preds)
+    test_acc = accuracy_score(y_test, test_preds)
+
+    print("\n=== Model Performance ===")
+    print(f"Training Accuracy: {train_acc:.4f}")
+    print(f"Test Accuracy:      {test_acc:.4f}")
 
     # Save model + scaler
     with open(MODEL_FILE, "wb") as f:
@@ -66,7 +83,7 @@ def train():
     with open(SCALER_FILE, "wb") as f:
         pickle.dump(scaler, f)
 
-    print("Model and scaler trained + saved successfully!")
+    print("\nModel and scaler trained + saved successfully!")
 
 if __name__ == "__main__":
     train()
