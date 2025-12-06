@@ -1,0 +1,14 @@
+{
+    "Plegik26": {
+        "password": "Pass123",
+        "age": "25"
+    },
+    "Test": {
+        "password": "1234J",
+        "age": "67"
+    },
+    "Testing1\u0001": {
+        "password": "123kd",
+        "age": "219"
+    }
+}

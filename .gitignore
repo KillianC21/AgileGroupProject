@@ -4,8 +4,9 @@
 
 # keep dataset
 !personality_synthetic_dataset.csv
+# keep training dataset
+!final_cleaned_dataset.csv
 
 # Ignore IDE folders
 .vscode/
 .idea/
-AiWork/PTMACK-AI/phi-3-mini-4k-instruct.Q4_K_M.gguf
