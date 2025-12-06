@@ -6,6 +6,8 @@
 !personality_synthetic_dataset.csv
 # keep training dataset
 !final_cleaned_dataset.csv
+# keep patient data
+!patients.csv
 
 # Ignore IDE folders
 .vscode/

@@ -10,7 +10,7 @@ PATIENT_FILE = "data/patients.csv"
 MODEL_FILE = "models/model.pkl"
 SCALER_FILE = "models/scaler.pkl"
 
-# Trait columns (matches your mapping)
+# Trait columns
 TRAIT_COLUMNS = [
     "social_energy","talkativeness","party_liking","leadership",
     "empathy","emotional_stability","curiosity","risk_taking",
